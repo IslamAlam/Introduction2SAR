@@ -1,0 +1,14 @@
+chirp_2d_test_constants.txt
+
+;Define Constants
+
+R0 = 1000d 		;closest range, (m)
+v = 70 	  		;sensor velocity (m/s)
+L_antenna = 2		;antenna length (m)
+
+lambda = 0.0566d	;wavelength
+C = 3d8			;speed of light (m/s)
+Bw = 50d6		;bandwidth (Hz)
+Tau = 5d-6		;pulse width (s)
+Fs_range = 100d6	;sampling frequency in range (Hz)
+PRF = 400 		;pulse repetition frequency (Hz)
