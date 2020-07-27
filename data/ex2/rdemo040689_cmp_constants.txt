@@ -1,0 +1,10 @@
+rdemo040689_cmp_constants.txt
+
+;Define Constants
+
+lambda  = 0.0566                        ;wavelength (m)
+V       = 72.6                          ;airborne sensor velocity (m/s)
+Rg_delay= 9.4d-6                        ;range delay R0=c*t/2. (i.e. range to first pulse, s)
+PRF     = 952.38			;pulse repetition frequency (Hz)
+Res_az  = 1.5                   	;resolution in azimuth (m)
+c       = 3d8                           ;speed of light (m/s)

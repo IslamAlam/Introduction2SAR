@@ -1,5 +1,0 @@
-;Constants for Mt. Etna data (i_xsar125141_bild1.dat, i_xsar125141_bild2.dat)
-
-c       = 3d8                           ;speed of light (m/s)
-Fs      = 22.5e6			;range sampling frequency (Hz)
-BW      = 20e6				;range bandwidth (Hz)
