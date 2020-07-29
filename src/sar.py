@@ -95,6 +95,7 @@ def cross_sar_image(im1, im2):
 
 
 def plot_sar(sar_img, title, log=True, **kwargs):
+    sar_img_rescale = np.interp(np.abs(sar_img), (np.amin(np.abs(sar_img)), 3*np.mean(np.abs(sar_img))), (0, 255))
     fig = plt.figure(constrained_layout=False, figsize=(10, 10))
     gs1 = fig.add_gridspec(nrows=1, ncols=2)
 
@@ -103,7 +104,7 @@ def plot_sar(sar_img, title, log=True, **kwargs):
         log_cmp = LogNorm(vmin=100, vmax=np.max(np.abs(sar_img)))
         ax_abs = f_ax1.imshow(np.abs(sar_img), cmap='gray', norm=log_cmp, **kwargs)
     else:
-        ax_abs = f_ax1.imshow(np.abs(sar_img), cmap='gray', **kwargs)
+        ax_abs = f_ax1.imshow(np.abs(sar_img_rescale), cmap='gray', **kwargs)
             
     f_ax1.set_title("Absolute")
     fig.colorbar(ax_abs, ax=f_ax1, shrink=0.4)
