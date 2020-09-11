@@ -15,10 +15,12 @@ class PolSAR():
         self.SMatrix = self.MonostaticBackscatteringMatrixS(XX, XY, YX, YY)
         
         self.lex_vector = self.lexicographic_scattering_vector(self.SMatrix)
-        self.pauli_vector = self.pauli_scattering_vector(self.SMatrix)
-        print(self.lex_vector.shape)
-        self.TMatrix = self.PolarimetricCoherencyTMatrix(k_vector=self.lex_vector)
         self.CMatrix = self.PolarimetricCovarianceCMatrix(omega_vector=self.lex_vector)
+
+        self.pauli_vector = self.pauli_scattering_vector(self.SMatrix)
+        self.TMatrix = self.PolarimetricCoherencyTMatrix(k_vector=self.pauli_vector)
+        print(self.lex_vector.shape)
+        
         
         
     def MonostaticBackscatteringMatrixS(self, HH, HV, VH, VV):
@@ -117,7 +119,7 @@ class PolSAR():
         for ix,iy in np.ndindex(k_vector.shape[0:2]):
             k_vec_temp = k_vector[ix, iy, :].reshape(-1,1)
             pol_mat_temp = np.dot(k_vec_temp, k_vec_temp.T.conjugate())
-            pol_coherency_matrix[ix, iy, :] = pol_mat_temp
+            pol_coherency_matrix[ix, iy, :, :] = pol_mat_temp
 
         n_window = 7
         mean_filter = np.ones((n_window, n_window))
@@ -125,7 +127,7 @@ class PolSAR():
         pol_coherency_matrix_filtered = np.zeros_like(pol_coherency_matrix)
         for ix,iy in np.ndindex(pol_coherency_matrix.shape[2:]):
             # print(i)
-            pol_coherency_matrix_filtered[:,:,ix,iy] = scipy.signal.convolve(pol_coherency_matrix[:,:,ix,iy] , 
+            pol_coherency_matrix_filtered[:, :, ix, iy] = scipy.signal.convolve(pol_coherency_matrix[:, :, ix, iy] , 
                                                                          mean_filter, mode='same')
         return pol_coherency_matrix, pol_coherency_matrix_filtered
     
@@ -144,7 +146,7 @@ class PolSAR():
         
         omega_vec_temp = np.zeros( (omega_vector.shape[2], 1),  dtype=complex )
         for ix,iy in np.ndindex(omega_vector.shape[0:2]):
-            omega_vec_temp = omega_vector[ix, iy, :].reshape(-1,1)
+            omega_vec_temp = omega_vector[ix, iy, :].reshape(-1, 1)
             pol_mat_temp = np.dot(omega_vec_temp, omega_vec_temp.T.conjugate())
             pol_covariance_matrix[ix, iy, :, :] = pol_mat_temp
 
@@ -173,13 +175,14 @@ class EigenvectorDecomposition():
        | 7 8 9 |
     """
     def __init__(self, T_Matrix):
-        self.elems = T_Matrix
+        # self.elems = T_Matrix
         self.w, self.v = self.EigenDecomposition(T_Matrix)
         
         self.p = self.PseudoProbabilities(self.w.real)
         self.H = self.Entropy(self.p)
         self.A = self.Anisotropy(self.p)
         self.alpha, self.alpha_mean = self.AlphaAngles(self.v, self.p)
+        
         #print(self.elems)
         #print(self.w)
     
@@ -193,7 +196,7 @@ class EigenvectorDecomposition():
         
         for ix,iy in np.ndindex(T_Matrix.shape[0:2]):
             T_mat = T_Matrix[ix, iy, :, :]
-            w[ix, iy, :], v[ix, iy, :, :]  = np.linalg.eigh(T_mat)            
+            w[ix, iy, :], v[ix, iy, :]  = np.linalg.eigh(T_mat)            
 
         return w.real, v
     
@@ -215,6 +218,7 @@ class EigenvectorDecomposition():
     
     def AlphaAngles(self, v, p):
         alpha = np.zeros_like(p, dtype=np.float)
+        print(v.shape, p.shape)
         alpha[:,:,0] = np.arccos(np.abs(v[:,:,0,0]))
         alpha[:,:,1] = np.arccos(np.abs(v[:,:,0,1]))
         alpha[:,:,2] = np.arccos(np.abs(v[:,:,0,2]))

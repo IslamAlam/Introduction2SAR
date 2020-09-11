@@ -69,7 +69,7 @@ class XBragg():
             ⎢                     2⋅β₁                           ⎥
             ⎢                                                    ⎥
             ⎢          __                                        ⎥
-        T =  ⎢sin(2⋅β₁)⋅C₂     ⎛    sin(4⋅β₁)⎞                    ⎥
+        T = ⎢sin(2⋅β₁)⋅C₂     ⎛    sin(4⋅β₁)⎞                    ⎥
             ⎢────────────  C₃⋅⎜1 + ─────────⎟          0         ⎥
             ⎢    2⋅β₁         ⎝       4⋅β₁  ⎠                    ⎥
             ⎢                                                    ⎥
@@ -136,6 +136,7 @@ class XBragg():
     
     def AlphaAngles(self, v, p):
         alpha = np.zeros_like(p, dtype=np.float)
+        # print(v.shape, p.shape)
         alpha[:,:,0] = np.arccos(np.abs(v[:,:,0,0]))
         alpha[:,:,1] = np.arccos(np.abs(v[:,:,0,1]))
         alpha[:,:,2] = np.arccos(np.abs(v[:,:,0,2]))
